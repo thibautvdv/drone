@@ -15,6 +15,7 @@ use termcolor::{ColorChoice, ColorSpec, StandardStream, WriteColor};
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Device {
+    Cc2538,
     Nrf52810,
     Nrf52811,
     Nrf52832,
@@ -124,6 +125,9 @@ impl Device {
         item!(Self::Nrf52811);
         item!(Self::Nrf52810);
 
+        family!("TI Simple Link");
+        item!(Self::Cc2538);
+
         Ok(())
     }
 
@@ -134,7 +138,8 @@ impl Device {
             | Self::Stm32F101
             | Self::Stm32F102
             | Self::Stm32F103
-            | Self::Stm32F107 => "thumbv7m-none-eabi",
+            | Self::Stm32F107
+            | Self::Cc2538 => "thumbv7m-none-eabi",
             Self::Nrf52810
             | Self::Nrf52811
             | Self::Nrf52832
@@ -198,6 +203,7 @@ impl Device {
             | Self::Stm32L4S5
             | Self::Stm32L4S7
             | Self::Stm32L4S9 => 0x0800_0000,
+            Self::Cc2538 => 0x0020_0000,
         }
     }
 
@@ -235,7 +241,8 @@ impl Device {
             | Self::Stm32L4R9
             | Self::Stm32L4S5
             | Self::Stm32L4S7
-            | Self::Stm32L4S9 => 0x2000_0000,
+            | Self::Stm32L4S9
+            | Self::Cc2538 => 0x2000_0000,
         }
     }
 
@@ -272,6 +279,7 @@ impl Device {
             | Self::Stm32L4S5
             | Self::Stm32L4S7
             | Self::Stm32L4S9 => Some(4_000_000),
+            Self::Cc2538 => Some(16_000_000),
         }
     }
 
@@ -315,6 +323,7 @@ impl Device {
                 "floating_point_unit",
                 "security_extension",
             ]),
+            Self::Cc2538 => (crates::Platform::CortexM, "cortex_m3_r1p0", &[]),
         }
     }
 
@@ -407,6 +416,7 @@ impl Device {
             Self::Stm32L4S9 => (crates::Bindings::Stm32, "stm32l4s9", &[
                 "adc", "dma", "exti", "gpio", "i2c", "rtc", "spi", "tim", "uart",
             ]),
+            Self::Cc2538 => (crates::Bindings::TiSl, "cc2538", &[]),
         }
     }
 
@@ -442,6 +452,7 @@ impl Device {
             | Self::Stm32L4S9 => &[Probe::Bmp, Probe::Openocd],
             Self::Nrf52810 | Self::Nrf52811 | Self::Nrf52832 | Self::Nrf52840 => &[Probe::Openocd],
             Self::Nrf9160 => &[Probe::Jlink],
+            Self::Cc2538 => &[Probe::Openocd],
         }
     }
 
@@ -478,7 +489,8 @@ impl Device {
             | Self::Nrf52810
             | Self::Nrf52811
             | Self::Nrf52832
-            | Self::Nrf52840 => &[Log::SwoProbe, Log::SwoSerial],
+            | Self::Nrf52840
+            | Self::Cc2538 => &[Log::SwoProbe, Log::SwoSerial],
             Self::Nrf9160 => &[Log::DsoSerial],
         }
     }
@@ -517,6 +529,7 @@ impl Device {
             | Self::Stm32L4S7
             | Self::Stm32L4S9 => &["-f", "target/stm32l4x.cfg"],
             Self::Nrf9160 => &[],
+            Self::Cc2538 => &["-f", "target/cc2538.cfg"],
         }
     }
 }

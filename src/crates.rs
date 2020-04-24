@@ -13,6 +13,7 @@ pub enum Platform {
 pub enum Bindings {
     Nrf,
     Stm32,
+    TiSl,
 }
 
 impl Platform {
@@ -44,6 +45,7 @@ impl Bindings {
         match self {
             Self::Nrf => "nrf",
             Self::Stm32 => "stm32",
+            Self::TiSl => "ti-sl",
         }
     }
 
@@ -52,6 +54,7 @@ impl Bindings {
         match self {
             Self::Nrf => "nrf",
             Self::Stm32 => "stm32",
+            Self::TiSl => "ti_sl",
         }
     }
 
@@ -60,6 +63,7 @@ impl Bindings {
         match self {
             Self::Nrf => "nrf_mcu",
             Self::Stm32 => "stm32_mcu",
+            Self::TiSl => "ti_sl_mcu",
         }
     }
 }
